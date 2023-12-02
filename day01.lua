@@ -52,7 +52,7 @@ local function calibration_value(value)
 	return first .. last
 end
 
-local function day1()
+local function day01()
 	lines = utils.open_file("inputs/day01")
 	sum = 0
 	
@@ -88,4 +88,4 @@ local function tests()
 end
 
 tests()
-day1()
+day01()
