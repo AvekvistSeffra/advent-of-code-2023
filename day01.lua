@@ -53,7 +53,7 @@ local function calibration_value(value)
 end
 
 local function day1()
-	lines = utils.open_file("inputs/day01.data")
+	lines = utils.open_file("inputs/day01")
 	sum = 0
 	
 	for i,v in ipairs(lines) do
