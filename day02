@@ -95,7 +95,7 @@ local function power_games(games)
 end
 
 local function main()
-	local lines = utils.open_file("inputs/day02")
+	local lines = utils.open_file_lines("inputs/day02")
 
 	print(sum_games(lines))
 	print(power_games(lines))

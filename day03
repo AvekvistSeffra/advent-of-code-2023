@@ -1,0 +1,50 @@
+#!/opt/homebrew/bin/lua
+
+local utils = require("utils")
+
+local function get_window(x, y, schematic)
+	window = {}
+
+	for tx=x-1,x+1 do
+		for ty=y-1,y+1 do
+			if tx < 0 or ty < 0 then
+				window[tx][ty] = nil
+			end
+		end
+	end
+
+	return window
+end
+
+local function thing(schematic)
+	width, height = utils.matrix_dimensions(schematic)
+	linear_schematic = utils.split_chars(schematic)
+	
+	for j=0,height-1 do
+		for i=0,width-1 do
+			io.write(linear_schematic[i + j * width + 1])
+		end
+	end
+end
+
+local function main()
+	local schematic = utils.open_file("inputs/day03")
+end
+
+local function test()
+	-- 467..114..
+	-- ...*......
+	-- ..35..633.
+	-- ......#...
+	-- 617*......
+	-- .....+.58.
+	-- ..592.....
+	-- ......755.
+	-- ...$.*....
+	-- .664.598..
+	local schematic = "467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598.." 
+	thing(schematic)
+end
+
+test()
+main()

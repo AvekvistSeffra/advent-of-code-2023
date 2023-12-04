@@ -2,16 +2,43 @@ local utils = {}
 
 function utils.open_file(path)
 	io.input(path)
-	file = io.read("*all")
+	return io.read("*all")
+end
+
+function utils.open_file_lines(path)
+	io.input(path)
+	local file = io.read("*all")
 	return utils.split_lines(file)
 end
 
+function utils.open_file_chars(path)
+	io.input(path)
+	local file = io.read("*all")
+	return utils.split_chars(file)
+end
+
 function utils.split_lines(str)
-	lines = {}
-	for s in file:gmatch("[^\r\n]+") do
+	local lines = {}
+	for s in str:gmatch("[^\r\n]+") do
 		table.insert(lines, s)
 	end
 	return lines
+end
+
+function utils.split_chars(str)
+	local lines = utils.split_lines(str)
+	local characters = {}
+	for i,line in ipairs(lines) do
+		for s in str:gmatch(".") do
+			table.insert(characters, s)
+		end
+	end
+	return characters
+end
+
+function utils.matrix_dimensions(schematic)
+	lines = utils.split_lines(schematic)
+	return #lines[1], #lines
 end
 
 ---@param o1 any|table First object to compare
