@@ -37,7 +37,7 @@ function utils.equals(o1, o2, ignore_mt)
 
     for key1, value1 in pairs(o1) do
         local value2 = o2[key1]
-        if value2 == nil or equals(value1, value2, ignore_mt) == false then
+        if value2 == nil or utils.equals(value1, value2, ignore_mt) == false then
             return false
         end
         keySet[key1] = true

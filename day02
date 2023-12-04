@@ -1,0 +1,136 @@
+#!/opt/homebrew/bin/lua
+
+local utils = require("utils")
+
+local function test_game(id, red, green, blue)
+	game = {}
+	game.id = id
+	game.red = red
+	game.green = green
+	game.blue = blue
+	return game
+end
+
+local function get_max_colour(str, colour)
+	local value = str
+	local max = 0
+	while value do
+		local cstart, cend = string.find(value, "%d+%s+" .. colour)
+		if not cend then break end
+		local token = string.sub(value, cstart, cend)
+		local tstart, tend = string.find(token, "%d+")
+		local current = tonumber(string.sub(token, tstart, tend))
+		if current > max then
+			max = current
+		end
+		value = string.sub(value, cend+1)
+	end
+	return max
+end
+
+local function sum_colour(str, colour)
+	local value = str
+	local sum = 0
+	while value do
+		local cstart, cend = string.find(value, "%d+%s+" .. colour)
+		if not cend then break end
+		local token = string.sub(value, cstart, cend)
+		local tstart, tend = string.find(token, "%d+")
+		sum = sum + tonumber(string.sub(token, tstart, tend))
+		value = string.sub(value, cend+1)
+	end
+	return sum
+end
+
+local function parse_game(str)
+	local temp = string.sub(str, string.find(str, "Game%s+%d+"))
+	local id = tonumber(string.sub(temp, string.find(temp, "%d+")))
+	
+	local game = {}
+	game.id = id
+	game.red = get_max_colour(str, "red")
+	game.green = get_max_colour(str, "green")
+	game.blue = get_max_colour(str, "blue")
+
+	return game
+end
+
+local function filter(game, red, green, blue)
+	if game.red > red or game.green > green or game.blue > blue then
+		return false
+	end
+	return true
+end
+
+local function constraints(reds, greens, blues)
+	local reds = reds or 12
+	local greens = greens or 13
+	local blues = blues or 14
+	return reds, greens, blues
+end
+
+local function sum_games(games, reds, greens, blues)
+	local sum = 0
+
+	for i,v in ipairs(games) do
+		local game = parse_game(v)
+		if filter(game, constraints(reds, greens, blues)) then
+			sum = sum + game.id
+		end
+	end
+
+	return sum
+end
+
+local function power_games(games)
+	local sum = 0
+
+	for i,v in ipairs(games) do
+		local game = parse_game(v)
+		power = game.red * game.green * game.blue
+		sum = sum + power
+	end
+
+	return sum
+end
+
+local function day02()
+	local lines = utils.open_file("inputs/day02")
+
+	print(sum_games(lines))
+	print(power_games(lines))
+end
+
+local function tests()
+	local games = {
+		"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
+		"Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
+		"Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
+		"Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
+		"Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+	}
+	
+	test_game1 = test_game(1, 4, 2, 6)
+	assert(utils.equals(parse_game(games[1]), test_game1), "failed test 1")
+
+	test_game2 = test_game(2, 1, 3, 4)
+	assert(utils.equals(parse_game(games[2]), test_game2), "failed test 2")
+
+	test_game3 = test_game(3, 20, 13, 6)
+	assert(utils.equals(parse_game(games[3]), test_game3), "failed test 3")
+
+	test_game4 = test_game(4, 14, 3, 15)
+	assert(utils.equals(parse_game(games[4]), test_game4), "failed test 4")
+
+	test_game5 = test_game(5, 6, 3, 2)
+	assert(utils.equals(parse_game(games[5]), test_game5), "failed test 5")
+
+	assert(sum_games(games, 30, 30, 30) == 15, "failed test 6")
+
+	--assert(sum_games(games, 5, 30, 30) == 3, "failed test 7")
+
+	assert(sum_games(games) == 8, "failed test 8")
+end
+
+tests()
+day02()
